@@ -1,0 +1,80 @@
+/******************************************************************************
+
+https://practice.geeksforgeeks.org/problems/cutted-segments/0
+
+*******************************************************************************/
+#include <iostream>
+#include <set>
+#include <limits.h>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+	while(t--)
+	{
+	    int l;
+	    cin >> l;
+	    set<int> cuts;
+	    for(int i=0;i<3;i++)
+	    {
+	        int v;
+	        cin >> v;
+	        cuts.insert(v);
+	    }
+	    
+	    
+	    int noofwaystomakethislength[l+1]={0};
+	    int maxnoofsegmenttillthislength[l+1]={0};
+	    noofwaystomakethislength[0]=1;
+	    maxnoofsegmenttillthislength[0]=0;
+	   // maxLength[1]=1;
+	    
+	    for(auto a:cuts)
+	    {
+	        // setting up 1 to all the lengths
+	        // which are possible by current 
+	        // cut length 
+	        for(int i=1;i<=l;i++)
+	        {
+	            if(i>=a && noofwaystomakethislength[i-a]>=1)
+	            {
+	                // to get the number of ways 
+	                // increamenting the no of ways 
+	                // thorugh which this length 
+	                // can be generated 
+	                noofwaystomakethislength[i]++;// = 1+rods[i-a];
+    	            
+    	            // to get maximum segment length
+    	            // till a particular length 
+    	            // so if length is possible by the current cut 
+    	            // then no of segment by the cut is considerd 
+    	            // if no of segment is maximum than current 
+    	            // it is stored for this length 
+    	            if(maxnoofsegmenttillthislength[i]
+    	            <1+maxnoofsegmenttillthislength[i-a])
+    	               maxnoofsegmenttillthislength[i] = 
+    	               1+maxnoofsegmenttillthislength[i-a]; 
+	            }
+	        }
+	    }
+	    
+	    cout << maxnoofsegmenttillthislength[l] << endl;
+	    
+	}
+	return 0;
+}
+
+/*
+
+Input:
+2
+4
+2 1 1
+5
+5 3 2
+Output:
+4
+2
+
+*/
