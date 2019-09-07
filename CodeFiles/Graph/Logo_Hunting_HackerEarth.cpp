@@ -11,126 +11,23 @@ using namespace std;
 char fg[100][100];
 int vs[100][100];
 
-int xdir[4] = {+1,-1,+0,+0};
-int ydir[4] = {+0,+0,+1,-1};
+// int xdir[4] = {+1,-1,+0,+0};
+// int ydir[4] = {+0,+0,+1,-1};
 
-int debug=1;
+int xdir[8]={-1,1,0,0,-1,-1,1,1};
+int ydir[8]={0,0,-1,1,-1,1,-1,1};
+
+int debug=0;
 // char delimiterChacharcter = '#';
-char delimiterChacharcter = '1';
+char delimiterChacharcter = '$';
+
+int max_r,max_c;
 
 void matrixInput(int r,int c)
 {
 	_for(i,0,r)
 		_for(j,0,c)
 			cin >> fg[i][j];
-}
-
-int get_filled_Connected_Component(int r,int c)
-{
-	int noofconnectedComponent = 0;
-	bool isoriginContained = false;
-
-	// int noofconnectedComponent_row_wise = 0;
-
-	// int index= 0;
-	// map<pair<int,int>>,int> details;
-
-	// pair<int,int> startingPair = {0,0};
-
-	_for(i,0,r)
-	{
-		_for(j,0,c)
-		{
-			// if the cell is already visited 
-			if(vs[i][j]==1) continue;
-
-			// if the cell is # then 
-			// no need to color it 
-			// but mark it is visited 
-			// if(fg[i][j]==delimiterChacharcter)
-			// {
-			// 	vs[i][j] = 1;
-			// 	continue;
-			// }
-
-			// track the connected component 
-			// of boundary 
-			// because connected componenet 
-			// which has boundary will be having dfferent color
-			if(i==0 && j==0)
-			{
-				isoriginContained = true;
-			}
-
-			queue<pair<int,int>> q;
-			q.push({i,j});
-			vs[i][j]=1;
-
-			if(debug)
-			{
-				
-			}
-
-			// fill with color 
-			if(isoriginContained==true)
-			{
-				fg[i][j] = 'W';
-			}
-			else
-			{
-				fg[i][j] = 'R';
-			}
-
-			while(q.empty()==false)
-			{
-				pair<int,int> cur_pair = q.front();
-				q.pop();
-				_for(dir,0,4)
-				{
-					int xnew = cur_pair.first + xdir[dir];
-					int ynew = cur_pair.second + ydir[dir];
-
-					// outside cordinate is ignored 
-					if(xnew>=r || xnew<0) continue;
-					if(ynew>=c || ynew<0) continue; 
-
-					if(vs[xnew][ynew]==1) continue;
-
-					// ensures cell is hash but 
-					// not yet visited 
-					if(fg[xnew][ynew]==delimiterChacharcter) 
-					{
-						vs[xnew][ynew] = 1;
-						continue;
-					}
-
-					q.push({xnew,ynew});
-
-					if(isoriginContained==true)
-					{
-						fg[xnew][ynew] = 'W';
-					}
-					else
-					{
-						fg[xnew][ynew] = 'R';
-					}
-
-					vs[xnew][ynew] = 1;
-				}
-			}
-
-
-			if(isoriginContained==true)
-			{
-				isoriginContained = false;
-			}
-
-			noofconnectedComponent++;
-
-		}
-	}
-
-	return noofconnectedComponent;
 }
 
 void printOutput(int r,int c)
@@ -144,20 +41,55 @@ void printOutput(int r,int c)
 
 }
 
-map<int,char> outputchar;
+// track how many dots comes in between 
+int holes=0;
 
-char mapOutput(int noofconnectedComponent)
+// it will instruct and repalce all the cur char with the replaced one 
+// provided indexes are in range 
+// and if new char other than to be replace is found
+// then it will be ignored 
+void fill_all_data(int r,int c,char cur_char,char new_char)
 {
-	if(outputchar.size()==0)
+	if(r>=max_r || r<0) return;
+	if(c>=max_c || c<0) return;
+
+	if(fg[r][c]!=cur_char)
+		return;
+	
+	fg[r][c] = new_char;
+
+	for(int dir=0;dir<4;dir++)
 	{
-		outputchar[1] = 'F';
-		outputchar[2] = 'O';
-		outputchar[3] = 'P';
-		outputchar[4] = 'N';
+		int new_x = xdir[dir] + r;
+		int new_y = ydir[dir] + c;
+		fill_all_data(new_x,new_y,cur_char,new_char);
 	}
-	if(outputchar.find(noofconnectedComponent)==outputchar.end())
-		return 'N';
-	return outputchar[noofconnectedComponent];
+}
+
+// if '1' is identified ; then i will try
+// to fill with sign same as i have repalced . 
+// if any '.' is identifeid it shows 
+// a new region is starting so we need to fill
+// that region with any other marker 
+// region should be counted once 
+void dfs_to_track_holes(int r,int c)
+{
+
+	if(r>=max_r || r<0) return;
+	if(c>=max_c || c<0) return;
+
+	if(fg[r][c]=='1')
+	{
+		fg[r][c]=delimiterChacharcter;
+		for(int dir=0;dir<8;dir++)
+			dfs_to_track_holes(r+xdir[dir],c+ydir[dir]);
+	}
+	else if(fg[r][c]=='.')
+	{
+		holes++;
+		fill_all_data(r,c,'.','*');
+	}
+
 }
 
 int main()
@@ -167,87 +99,62 @@ int main()
 		forinop;
 	}
 
-	int r,c;
-	cin >> r >> c;
-	matrixInput(r,c);
+	cin >> max_r >> max_c;
+	matrixInput(max_r,max_c);
 	memset(vs,0,sizeof(vs));
-	int noofconnectedComponent = get_filled_Connected_Component(r,c);
-	
-	cout << mapOutput(noofconnectedComponent) << endl;
+	// fill outer boundary first diff character
+	fill_all_data(0,0,'.',delimiterChacharcter);
+
+	char * ch_data = new char[3];
+	ch_data[0]='F';
+	ch_data[1]='O';
+	ch_data[2]='P';
+	int * ch_data_count = new int[3];
+	ch_data_count[0]=0;
+	ch_data_count[1]=0;
+	ch_data_count[2]=0;
+
+	// if(debug)
+	// 	cout << " Start " << endl;
+
+	for(int i=0;i<max_r;i++)
+	{
+		for(int j=0;j<max_c;j++)
+		{
+			if(fg[i][j]=='1')
+			{
+				holes = 0;
+				dfs_to_track_holes(i,j);
+				if(debug)
+					cout << " NO OF HOLES " << holes << endl;
+				ch_data_count[holes]++;
+			}
+		}
+	}
 
 	if(debug)
 	{
-		printOutput(r,c);
+		printOutput(max_r,max_c);
 	}
+
+	bool anyAppPresent = false;
+
+	for(int i=0;i<3;i++)
+		if(ch_data_count[i]>0)
+		{
+			for(int k=0;k<ch_data_count[i];k++)
+				cout << ch_data[i];
+			anyAppPresent = true;
+		}
+
+	if(anyAppPresent==false)
+		cout << "N" << endl;
 
 	return 0;
 }
 
 
 /*
-Input 1:
-8 8
-........
-.######.
-.#....#.
-.#....#.
-.#....#.
-.#....#.
-.######.
-........
-Output 1:
-WWWWWWWW
-W######W
-W#RRRR#W
-W#RRRR#W
-W#RRRR#W
-W#RRRR#W
-W######W
-WWWWWWWW
-
-Input 2:
-6 6
-......
-.1111.
-.1..1.
-.1..1.
-.1111.
-......
-Output 2:
-2
-WWWWWW
-W1111W
-W1RR1W
-W1RR1W
-W1111W
-WWWWWW
-
-Input 3:
-11 9
-.........
-.1111111.
-.1.....1.
-.1.....1.
-.1.....1.
-.1111111.
-.1.....1.
-.1.....1.
-.1.....1.
-.1111111.
-.........
-Output 3:
-3
-WWWWWWWWW
-W1111111W
-W1RRRRR1W
-W1RRRRR1W
-W1RRRRR1W
-W1111111W
-W1RRRRR1W
-W1RRRRR1W
-W1RRRRR1W
-W1111111W
-WWWWWWWWW
 
 Input 4:
 17 9
@@ -269,23 +176,154 @@ Input 4:
 .1111111.
 .........
 Output 4:
-N
-WWWWWWWWW
-W1111111W
-W1RRRRR1W
-W1RRRRR1W
-W1RRRRR1W
-W1111111W
-W1RRRRR1W
-W1RRRRR1W
-W1RRRRR1W
-W1111111W
-WWWWWWWWW
-W1111111W
-W1RRRRR1W
-W1RRRRR1W
-W1RRRRR1W
-W1111111W
-WWWWWWWWW
+
+ NO OF HOLES 2
+ NO OF HOLES 1
+$$$$$$$$$
+$$$$$$$$$
+$$*****$$
+$$*****$$
+$$*****$$
+$$$$$$$$$
+$$*****$$
+$$*****$$
+$$*****$$
+$$$$$$$$$
+$$$$$$$$$
+$$$$$$$$$
+$$*****$$
+$$*****$$
+$$*****$$
+$$$$$$$$$
+$$$$$$$$$
+OP
+
+
+Input 5:
+
+18 26
+..........................
+..........................
+........11111111111.......
+........11.......11.......
+........11.......11.......
+........11.......11.......
+........11.......11.......
+........11111111111.......
+..........................
+.....11111111.............
+.....1....................
+.....1....................
+.....1....................
+.....1111111..............
+.....1....................
+.....1....................
+.....1....................
+..........................
+
+Output 5:
+
+ NO OF HOLES 1
+ NO OF HOLES 0
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$*******$$$$$$$$$
+$$$$$$$$$$*******$$$$$$$$$
+$$$$$$$$$$*******$$$$$$$$$
+$$$$$$$$$$*******$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+FO
+
+Input :
+
+35 26
+..........................
+..........................
+...111111111.......111111.
+...11.....11.......11.....
+...11.....11.......11.....
+...111111111.......11111..
+...11.....11.......11.....
+...11.....11.......11.....
+...111111111..............
+..........................
+..........111111111.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........111111111.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........11.....11.......
+..........111111111.......
+..........................
+..........................
+
+Output:
+
+ NO OF HOLES 2
+ NO OF HOLES 0
+ NO OF HOLES 2
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$*****$$$$$$$$$$$$$$$$
+$$$$$*****$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$*****$$$$$$$$$$$$$$$$
+$$$$$*****$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$*****$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$
+FP
 
 */

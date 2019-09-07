@@ -62,7 +62,7 @@ void dfs(int src)
         // with that of the neighbour   
         else if(_onstack[ng]==true)
         {
-            _Low_link_value[src] = min(_Low_link_value[ng],_Low_link_value[src]);
+            _Low_link_value[src] = min(visited_time[ng],_Low_link_value[src]);
         }
     }
 

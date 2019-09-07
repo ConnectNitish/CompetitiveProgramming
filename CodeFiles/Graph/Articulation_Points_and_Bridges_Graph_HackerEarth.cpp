@@ -96,7 +96,7 @@ void dfs_for_AP(int src)
 		// node 
 		else
 		{
-			lowtime[src] = min(lowtime[src],lowtime[neighbour]);
+			lowtime[src] = min(lowtime[src],visitedTime[neighbour]);
 		}
 	}
 

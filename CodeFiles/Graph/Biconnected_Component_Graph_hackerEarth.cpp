@@ -145,7 +145,7 @@ void dfs(int src)
 		// from the current node 
 		else if(visitedtime[ngb]<visitedtime[src])
 		{
-			lowtime[src] = min(lowtime[src],lowtime[ngb]);
+			lowtime[src] = min(lowtime[src],visitedtime[ngb]);
 			biconnected_component_edges.push({src,ngb});
 
 			if(debug)

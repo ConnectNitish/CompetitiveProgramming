@@ -47,7 +47,7 @@ void dfs(int src)
 		}
 		else
 		{
-			low_time[src] = min(low_time[src],low_time[ng]);
+			low_time[src] = min(low_time[src],visited_time[ng]);
 		}
 	}
 }

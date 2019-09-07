@@ -41,11 +41,13 @@ void dfs_for_AP(int src)
 				isArticulationPointEligible = true;
 			else
 				lowtime[src] = min(lowtime[src],lowtime[neighbour]);
+
+
 		}
 		// if the node is visited 
 		else
 		{
-			lowtime[src] = min(lowtime[src],lowtime[neighbour]);
+			lowtime[src] = min(lowtime[src],visitedTime[neighbour]);
 		}
 	}
 
