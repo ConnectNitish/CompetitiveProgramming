@@ -64,7 +64,7 @@ void preprocess()
 			int index ;
 
 			for(index=0;index<dataIndexes.size();index++)
-				if(nu < dataIndexes[index])
+				if(dataIndexes[index] < nu)
 					break;
 
 			if(debug)
