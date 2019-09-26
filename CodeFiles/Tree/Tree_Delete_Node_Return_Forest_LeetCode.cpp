@@ -22,11 +22,24 @@ struct TreeNode
 class Solution {
 public:
 
-
+	// track the number of node below it 
+	// including itself 
 	map<long long,long long> counts;
+
+	// track the node and parent above it
+	// if no parent of node then it will contain NULL  
 	map<long long,TreeNode*> parent;
+
+	// track all the node which are below the node
 	map<long long,set<pair<TreeNode*,bool>>> reverseparent;
+	
+	// track down all the nodes which needs to be 
+	// searched 
 	map<long long,bool> input;
+
+	// track down the refernce to actual input nodes 
+	// and their pointer to direct access 
+	// the pointer of the node 
 	map<long long,TreeNode*> actual_input_node;
 
 	// template<typename T>
@@ -99,6 +112,11 @@ public:
 		return root;
 	}
 
+	// Traverse all the Tree 
+	// and gather Node's parent 
+	// no of children below it 
+	// its neighbour 
+	// left node is assigned as true ; else false
 	ll Traverse(TreeNode* node,TreeNode* parent_node,bool left)
 	{
 		if(node == NULL) return 0;
@@ -125,6 +143,7 @@ public:
 
 	int debug=1;
 
+
 	vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
 		counts.clear();
 		parent.clear();
@@ -134,6 +153,7 @@ public:
 
 		if(root->left!=NULL)
 		{
+			// root does not have any parent 
 			Traverse(root,NULL,true);
 		}
 		else if(root->right!=NULL)
@@ -142,8 +162,10 @@ public:
 			{
 				cout << " Master : Root right is NOT NULL " << endl;
 			}
+			// root does not have any parent 
 			Traverse(root,NULL,false);
 		}
+		// Base case 1 
 		else if(root!=NULL)
 		{
 			// only one node in Tree
@@ -156,6 +178,7 @@ public:
 				return result;
 			}
 		}
+		// Base case 2 
 		else
 		{
 			return result;
