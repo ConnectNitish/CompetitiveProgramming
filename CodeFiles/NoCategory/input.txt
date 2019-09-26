@@ -1,9 +1,16 @@
-abcd
-acer
-6
-b c 100
-c b 10
-c x 1
-e x 3
-c e 7
-r d 11
+10
+2 6 2
+aq fgefeg ga
+2 6 2
+aq fgefeg gh
+2 6 2
+aq fgefeg aa
+2 2 4
+qq ao qaqs
+2 2 4
+qq w aaqs
+2 2 5
+qq w aqaas
+2 5 5
+qq aqaka aqaas
+

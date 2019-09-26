@@ -13,7 +13,7 @@ int max_size;
 int k;
 vector<int> input;
 
-int debug=0;
+int debug=1;
 
 void get_all_subsequence_ofLength_k(int offset)
 {
