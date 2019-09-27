@@ -1,44 +1,74 @@
- s1[i] a
- s2[i] a
- Same 
- s1[i] b
- s2[i] c
- Before Loop : 
- char at min b
-10
-
- After Loop : 
- char at min b
-10
-
- Min Cost 10
- costofs1s2 100
- costofs2s1 10
- s1[i] c
- s2[i] e
- Before Loop : 
- char at min e
-7
-
- After Loop : 
- char at min x
-4
-
- Min Cost 14
- costofs1s2 7
- costofs2s1 2147483647
- s1[i] d
- s2[i] r
- Before Loop : 
- char at min d
-11
-
- After Loop : 
- char at min d
-11
-
- Min Cost 25
- costofs1s2 2147483647
- costofs2s1 11
-25
-abxd
+ Graph 
+ Graph 2 
+ aaa2
+ aaa17
+ aaa3
+ aaa5
+Query1 Result 3
+ Parent 
+1 : -1
+2 : 1
+3 : 1
+4 : 3
+5 : 3
+ Cost 
+1 : 3
+2 : 1
+3 : 2
+4 : 0
+5 : 1
+Query3 Result 2
+ Parent 
+1 : -1
+2 : 1
+3 : 1
+4 : 3
+5 : 3
+ Cost 
+1 : 3
+2 : 1
+3 : 2
+4 : 0
+5 : 1
+ Parent 
+1 : -1
+2 : 1
+3 : 1
+4 : 3
+5 : 3
+ Cost 
+1 : 2
+2 : 1
+3 : 1
+4 : 0
+5 : 1
+Query1 Result 2
+ Parent 
+1 : -1
+2 : 1
+3 : 1
+4 : 3
+5 : 3
+ Cost 
+1 : 2
+2 : 1
+3 : 1
+4 : 0
+5 : 1
+Query3 Result 1
+ Parent 
+1 : -1
+2 : 1
+3 : 1
+4 : 3
+5 : 3
+ Cost 
+1 : 2
+2 : 1
+3 : 1
+4 : 0
+5 : 1
+3
+2
+2
+1
