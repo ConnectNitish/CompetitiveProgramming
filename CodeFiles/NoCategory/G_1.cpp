@@ -1,97 +1,139 @@
 #include<bits/stdc++.h>
 using namespace std;
-#define pr pair<int,int>
 
-map<pair<set<int>,set<int>>,int> visited;
-unordered_map<int,set<int>> subjectsknown;
-unordered_map<int,set<int>> notknown; 
-unordered_map<int,int> all_subjects;
+vector<int> input;
+int n,K;
+int dp[1000][1000]={-1};
 
-int debug=0;
+int debug=1;
+
+int R(int i,int j)
+{
+	int len = j-i+1;
+	int maxFreq = 0;
+
+	unordered_map<int,int> count;
+	
+	for(int k=i;k<=j;k++)
+	{
+		count[input[k]]++;
+
+		if(count[input[k]]>maxFreq)
+		{
+			maxFreq = count[input[k]]; 
+		}
+	}
+
+	// if(debug)
+	// {
+	// 	cout << " i " << i << " j " << j << endl;
+	// 	cout << (len - maxFreq) << endl;
+	// }
+
+	return (len - maxFreq);
+}
+
+int f(int x,int K1)
+{
+	// if(x==0) return 0;
+
+	if(K1<0) return 0;
+
+	if(debug)
+	{
+		cout << " Entering ";
+		cout << " x " << x << " K " << K1 << endl;
+	}
+
+	if(dp[x][K1] != -1)
+	{
+		if (debug)
+		{
+			cout << dp[x][K1] << endl;
+		}
+		return dp[x][K1];
+	}
+	
+	int value  = INT_MAX;
+
+	for(int i=0;i<=x-1;i++)
+	{
+		// if(debug)
+		// {
+		// 	cout << " x " << x << endl;
+		// 	for(int k=0;k<i;k++)
+		// 		cout << "\t" ;
+		// }
+
+		int f_value = f(i,K1-1);
+		int r_value = R(i+1,x);
+
+		// value  = min(value,r_value + f_value);
+
+		if(r_value+f_value>0)
+		{
+			if(value!=INT_MAX)
+				value = min(value,f_value+r_value);
+			else
+				value = r_value + f_value;
+		}
+
+		// if(debug)
+		// {
+		// 	cout << " x " << x << endl;
+		// 	cout << " i " << i << endl;
+		// 	cout << " f_value " << f_value << endl;
+		// 	cout << " r_value " << r_value << endl;	
+		// 	cout << " Sum " << value << endl;
+ 	// 	}
+	}
+
+	if(debug)
+	{
+		cout << " Exit \t";
+		cout << " x " << x << " K " << K1 << endl;
+	}
+
+	value = (value == INT_MAX ? 0 : value);
+
+	dp[x][K1] = value;
+
+	return value;
+}
 
 int main()
 {
 	int t;
 	cin >> t;
-
-	for(int tt=1;tt<=t;tt++)
+	while(t--)
 	{
-		visited.clear();
-		subjectsknown.clear();
-		notknown.clear();
-		all_subjects.clear();
-
-		int n,s;
-		cin >> n >> s;
-
-		for(int i=1;i<=n;i++)
+		input.clear();
+		cin >> n >> K;
+		for(int i=0;i<n;i++)
 		{
-			int noofsubject;
-			cin >> noofsubject;
-			for(int k=0;k<noofsubject;k++)
-			{
-				int x;
-				cin >> x;
-				subjectsknown[x].insert(i);
-				all_subjects[x] = 1 ;
-			}
+			int v;
+			cin >> v;
+			input.push_back(v);
 		}
 
-		for(auto a:all_subjects)
+		// memset(dp,INT_MAX,sizeof(dp));
+
+		for(int i=0;i<=n;i++)
 		{
-			for(int i=1;i<=n;i++)
-			{
-				if(subjectsknown[a.first].find(i)==subjectsknown[a.first].end())
-				{
-					notknown[a.first].insert(i);
-				}
-			}
+			for(int j=0;j<=K;j++)
+				dp[i][j] = -1;
 		}
 
-		long long count =0;
+		// cout << dp[7][2] << endl;
+		f(n-1,K);
 
-
-		set<pair<int,int>> dclass;
-
-		for(auto subject:all_subjects)
+		for(int i=0;i<=n;i++)
 		{
-			set<int> teacher = subjectsknown[subject.first];
-			set<int> student = notknown[subject.first];
-
-			if(visited.find({teacher,student})==visited.end())
-			{
-				// count += teacher.size() * student.size();
-
-				
-
-				if(debug)
-				{	
-					cout << " Subject " << subject.first << endl;
-					cout << " Teacher " << endl;
-					for(auto t:teacher)
-						cout << t << " ";
-					cout << endl;
-					cout << " Student " << endl;
-					for(auto t:student)
-						cout << t << " ";
-					cout << endl;
-				}
-
-				for(auto t:teacher)
-				{
-					for(auto s:student)
-					{
-						dclass.insert({t,s});
-					}
-				}
-
-				// count += dclass.size();
-
-				visited[{teacher,student}] = 1;
-			}
+			for(int j=0;j<=K;j++)
+				cout << dp[i][j] << " ";
+			cout << endl;
 		}
 
-		cout <<"Case #" << tt<<": "<< dclass.size() << endl;
 
 	}
 	return 0;
