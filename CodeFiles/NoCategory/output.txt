@@ -1,36 +1,19 @@
- N 5 Q 3
- INput 
- INput 
- Update 1
- Update 2
- Update 4
- INput 
- INput 
- INput 
- Update 5
- INput 
- Update 3
- Update 4
- INput 
- INput 
- Update 4
- INput 
- INput 
- Update 1
- Update 2
- Update 4
- INput 
- INput 
- INput 
- INput 
- INput 
-5
- INput 
- INput 
- INput 
-0
- INput 
- INput 
- INput 
- INput 
-2
+ Cycle Detected 
+2 7 4 5 
+ edge Details 
+2 1 5
+2 3 1
+3 2 3
+4 1 2
+4 3 4
+ normal_u 2
+ normal_v 3
+ normal_u 3
+ normal_v 4
+ normal_u 4
+ normal_v 1
+ normal_u 1
+ normal_v 2
+:)
+4
+1 4 2 5 

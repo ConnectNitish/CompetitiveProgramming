@@ -17,9 +17,9 @@ using namespace std;
 int debug=1;
 
 //min
-int operation_type=1;
+// int operation_type=1;
 //xor
-// int operation_type=3;
+int operation_type=3;
 // //max
 // int operation_type=2;
 
@@ -45,6 +45,7 @@ void buildTree(int start,int end,int index,int *Input,int* InputData)
 	else if(operation_type==3)
 		Input[index] = (Input[(index * 2)]^Input[(index * 2)+1]);
 }
+
 
 void updateTree(int start,int end,int value,int tree_index,int index_to_update,int *Input,int* InputData)
 {
@@ -112,6 +113,8 @@ int query(int start,int end,int start_index,int end_index,int current_index,int 
 
 	return result;
 }
+
+
 
 
 void initialise(int n,int q)
@@ -187,20 +190,127 @@ void initialise(int n,int q)
 
 	}
 
-	
+}
 
+void buildTreeSum(int start,int end,int index,int *Input,int* InputData)
+{
+	if(start>end) return;
+
+	if(start == end)
+	{
+		Input[index] = InputData[start];
+		return;
+	}
+	int mid = (start+end)/2;
+
+	buildTreeSum(start,mid,(index * 2),Input,InputData);
+	buildTreeSum(mid+1,end,(index * 2)+1,Input,InputData);
+	
+	Input[index] = (Input[(index * 2)] + Input[(index * 2)+1]);
+}
+
+void updateTreeWithXORatBaseAndSum
+(int start,int end,int value,int tree_index,int index_to_update,int *Input,int* InputData)
+{
+
+	if(index_to_update < start || end < index_to_update)
+		return;
+
+	if(start==end)
+	{
+		Input[tree_index] = Input[tree_index] ^ value;
+		return;
+	}
+
+	int mid = (start+end)/2;
+	updateTreeWithXORatBaseAndSum(start,mid,value,tree_index* 2,index_to_update,Input,InputData);
+	updateTreeWithXORatBaseAndSum(mid+1,end,value,(tree_index* 2)+1,index_to_update,Input,InputData);
+
+	Input[tree_index] = (Input[(tree_index * 2)] + Input[(tree_index * 2)+1]);
+
+}
+
+int queryToGiveSum
+(int start,int end,int start_index,int end_index,int current_index,int *Input,int* InputData)
+{
+	// Complete Over lapp 
+	if(start >= start_index  && end <= end_index )
+		return Input[current_index];
+
+	// No Over lapp 
+	if(end<start_index || end_index<start)
+		return 0;
+
+	// Partial Over Lapp 
+	// Call left and Right 
+	int mid = (start+end)/2;
+	int min_by_left = queryToGiveSum(start,mid,start_index,end_index,(current_index * 2),Input,InputData);
+	int min_by_right = queryToGiveSum(mid+1,end,start_index,end_index,(current_index * 2)+1,Input,InputData);
+
+	int result;
+	result = min_by_left + min_by_right; 
+	return result;
+}
+
+void initialiseNew(int n,int q)
+{
+
+	// Represent Tree (4*n+1)
+	int* Input = new int[4*n+1];
+	int* InputCopy = new int[4*n+1];
+	int* InputData=new int[n];
+
+	for(int i=1;i<=n;i++)
+	{
+		int v;
+		cin >> v;
+		InputData[i-1] = v;
+	}
+
+	buildTreeSum(0,n-1,1,Input,InputData);
+
+	for(int i=0;i<4*n+1;i++)
+	{
+		InputCopy[i] = Input[i];
+	}
+	
+	for(int i=1;i<=q;i++)
+	{
+		int xorValue,val1,val2;
+		cin >> val1 >> val2 >> xorValue;
+		// updateTree(0,n-1,xorValue,1,val1-1,Input,InputData);
+		// updateTree(0,n-1,xorValue,1,val2-1,Input,InputData);
+
+		for(int i=0;i<4*n+1;i++)
+		{
+			Input[i] = InputCopy[i];
+		}
+
+		updateTreeWithXORatBaseAndSum
+		(0,n-1,xorValue,0,val1,Input,InputData);
+		updateTreeWithXORatBaseAndSum
+		(0,n-1,xorValue,0,val2,Input,InputData);
+
+		cout << queryToGiveSum(0,n-1,val1-1,val2-1,1,Input,InputData) << endl;
+		
+		// updateTreeWithXORatBaseAndSum
+		// (0,n-1,xorValue,0,val1,Input,InputData);
+		// updateTreeWithXORatBaseAndSum
+		// (0,n-1,xorValue,0,val2,Input,InputData);
+	}
 }
 
 int32_t main()
 {
 	if(debug)
 	{
-		// freopen("input.txt","rb",stdin);
-		freopen("ae5e3153-432e-4c93-b30e-7d27bad0db75","rb",stdin);
+		freopen("input.txt","rb",stdin);
+		// freopen("ae5e3153-432e-4c93-b30e-7d27bad0db75","rb",stdin);
 		freopen("output.txt","wb",stdout);
 	}
 	int n,q;
 	cin >> n >> q;
-	initialise(n,q);
+	// initialise(n,q);
+	initialiseNew(n,q);
 	return 0;
 }
