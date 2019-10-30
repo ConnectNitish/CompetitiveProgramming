@@ -1,5 +1,9 @@
 // https://www.codechef.com/LTIME77B/problems/INVZCNT
 
+// https://discuss.codechef.com/t/invzcnt-unofficial-editorial/42939
+
+
+
 #include<bits/stdc++.h>
 using namespace std;
 #define int long long 
