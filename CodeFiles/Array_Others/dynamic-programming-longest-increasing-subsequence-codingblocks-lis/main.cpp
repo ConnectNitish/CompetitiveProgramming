@@ -8,7 +8,7 @@
 #include <algorithm>
 using namespace std;
 
-int debug=1;
+int debug=0;
 
 template<typename T>
 void print(T v)
@@ -216,7 +216,7 @@ int main()
     
     
     
-    cout << " Maximum LIS Sequence " << computeLIS(sequence) << endl; 
+    //cout << " Maximum LIS Sequence " << computeLIS(sequence) << endl; 
     
     if(debug)
     {
